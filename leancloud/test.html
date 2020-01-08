@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@4.1.0/dist/av-min.js"></script>
+  <script>
+   
+    AV.init({
+        appId: "NwANDFP3DoKVxqfREyw6vAD1-gzGzoHsz",
+        appKey: "PdG5QiCo4XosI4x15JuOvJWf",
+        serverURLs: "https://nwandfp3.lc-cn-n1-shared.com"
+    });
+    console.log(AV)
+   /* var Todo = AV.Object.extend('Todo');
+    var todo = new Todo();
+    todo.set('title',   '工程师周会');
+    todo.set('content', '周二两点，全体成员');
+    todo.save().then(function (todo) {
+  // 成功保存之后，执行其他逻辑
+  console.log('保存成功。objectId：' + todo.id);
+}, function (error) {
+  // 异常处理
+  console.log(error)
+}); */
+var query = new AV.Query('user');
+query.get('username').then((res) => {
+    const user = res.toJSON()
+    console.log(user)
+    let username = user.username
+    let password = user.password
+    console.log(username, password)
+  
+})
+.catch(err => {
+  console.log(err)
+})
+// query.get('5e1596b2562071008e2c46d4').then(res => {
+//   console.log(res.toJSON())
+// })
+
+  </script>
+</body>
+</html>

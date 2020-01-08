@@ -28,14 +28,15 @@
             if ($("#password").val().length == 0){
                 return alert("请输入密码!");
             }
-
+            var postData = JSON.stringify({
+                    username:$("#user").val(),
+                    password:$("#password").val()
+                })
             $.ajax({
                 url:"http://localhost:9999/login",
                 type:"POST",
-                data:{
-                    username:$("#user").val(),
-                    password:$("#password").val()
-                },
+                dataType: 'json',
+                data:postData,
                 success:function (res) {
                   console.log(res)
                     // alert("登录成功!")
@@ -44,15 +45,15 @@
                     console.log(err);
                 }
             })
-            // axios.post("http://localhost:9999/login",{
-            //     username:$("#user").val(),
-            //     password:$("#password").val()
-            // }).then(res => {
-            //     console.log(res)
-            // })
-            // .catch(err => {
-            //     console.log(err)
-            // })
+        //     axios.post("http://localhost:9999/login",{
+        //         username:$("#user").val(),
+        //         password:$("#password").val()
+        //     }).then(res => {
+        //         console.log(res)
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
         })
     });
 </script>

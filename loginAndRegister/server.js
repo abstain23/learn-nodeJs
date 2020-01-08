@@ -13,13 +13,16 @@ http.createServer(function (req , res) {
         var result = "";
         //获取前端代码发来的路由地址
         var pathName = url.parse(req.url).pathname;
+        console.log(pathName)
         req.on("data",function (chunk) {
             result += chunk;
         });
 
         req.on("end" , function () {
-            var user = qs.parse(result);
-            console.log(user)
+            // var user = qs.parse(result);
+            console.log('res',result)
+            var user = JSON.parse(result)
+            console.log('user',user)
             //判断用户是否存在
             if(user.username){
                 fs.readFile("db.txt" , "utf-8" , function (err,data) {
@@ -100,6 +103,6 @@ http.createServer(function (req , res) {
     }
 }).listen(9999, function (err) {
     if (!err){
-        console.log("服务器启动成功，正在监听port3000..");
+        console.log("服务器启动成功，正在监听port9999.");
     }
 });
