@@ -32,28 +32,26 @@
                     username:$("#user").val(),
                     password:$("#password").val()
                 })
-            $.ajax({
-                url:"http://localhost:9999/login",
-                type:"POST",
-                dataType: 'json',
-                data:postData,
-                success:function (res) {
-                  console.log(res)
-                    // alert("登录成功!")
-                },
-                error:function (err) {
-                    console.log(err);
-                }
+            // $.ajax({
+            //     url:"http://localhost:9999/login",
+            //     type:"POST",
+            //     // dataType: 'json',
+            //     contentType: "application/json",
+            //     data:postData,
+            //     success:function (res) {
+            //       console.log(res)
+            //         // alert("登录成功!")
+            //     },
+            //     error:function (err) {
+            //         console.log(err);
+            //     }
+            // })
+            axios.post("http://localhost:9999/login",postData).then(res => {
+                console.log(res)
             })
-        //     axios.post("http://localhost:9999/login",{
-        //         username:$("#user").val(),
-        //         password:$("#password").val()
-        //     }).then(res => {
-        //         console.log(res)
-        //     })
-        //     .catch(err => {
-        //         console.log(err)
-        //     })
+            .catch(err => {
+                console.log(err)
+            })
         })
     });
 </script>

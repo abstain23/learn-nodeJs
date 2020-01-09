@@ -23,6 +23,7 @@ http.createServer(function (req , res) {
             console.log('res',result)
             var user = JSON.parse(result)
             console.log('user',user)
+            console.log(user.username)
             //判断用户是否存在
             if(user.username){
                 fs.readFile("db.txt" , "utf-8" , function (err,data) {

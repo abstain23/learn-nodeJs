@@ -1,51 +1,3 @@
-// const http = require('http')
-// const url = require('url')
-// const qs = require('querystring')
-
-// http.createServer((req,res) => {
-//     //  // 设置跨域的域名，* 代表允许任意域名跨域
-//     // res.setHeader("Access-Control-Allow-Origin","*");
-//     // res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-//     // res.setHeader('Content-Type', 'application/json;charset="utf8"');
-//     // 设置跨域的域名，* 代表允许任意域名跨域
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   // 设置 header 类型
-//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-//   // 跨域允许的请求方式
-//   res.setHeader('Content-Type', 'application/json');
-
-//     let method = req.method.toLowerCase()
-//     // if(method === 'options'){
-//     //   res.statusCode = 200
-//     //   res.end('ok')
-//     // }
-//     if(method === 'post'){
-//       let result = ''
-//       let pathname = url.parse(req.url).pathname
-//       //监听data事件，获取传过来的数据
-//       res.on('data',(chunk) => {
-//         result += chunk
-//       })
-//       //数据发送完成
-//       req.on('end', () => {
-//         result = JSON.parse(result)
-//         console.log(result)
-//         // items.push(item.item)
-//         // 将数据返回客户端
-//         // let data = JSON.stringify()
-//         res.write('sss')
-//         res.end()
-//       })
-//     }else {
-//       res.statusCode =400
-//       res.end('get请求')
-//     }
-
-// }).listen(9998,(err) => {
-//   if(!err){
-//     console.log('监听9999端口')
-//   }
-// })
 var http = require("http");
 var url = require("url");
 var qs = require("querystring");
@@ -61,97 +13,88 @@ http.createServer(function (req, res) {
     var result = "";
     //获取前端代码发来的路由地址
     var pathName = url.parse(req.url).pathname;
-    console.log(pathName)
+    // console.log(pathName)
     req.on("data", function (chunk) {
       result += chunk;
     });
 
     req.on("end", function () {
-      // var user = qs.parse(result);
-      console.log(result)
       var user = JSON.parse(result)
-      console.log('user', user)
-      //判断用户是否存在
-      console.log(user.username)
-      if (user.username) {
-        fs.readFile("db.txt", "utf-8", function (err, data) {
-          if (!err) {
-            console.log("读取文件成功");
-            console.log('data length', data.length)
-            if (!data) { //当数据库没有存内容时
-              if (pathName == "/login") {
-                res.writeHead(200, {
-                  "Content-Type": "text/html;charest='utf-8'"
+      console.log('user,usr',user)
+      if(user.username){
+        fs.readFile('db.txt','utf-8',(err,data) => {
+          if(err){
+            console.log(err)
+            res.end('error,读取数据库失败')
+          }else {
+            if(!data){
+              console.log('数据库中没有数据')
+              if(pathName === '/login'){
+                res.writeHead(200,{
+                  'Content-Type': 'application/json;charset="utf8"'
                 })
-                // var msg = {name:'xx'}
-                res.end('用户不存在');
-                return;
+                res.end('err,用户不存在')
+                return false
               }
-              //根据前端发来的路由地址判断是登录还是注册页面，如果是注册页面
-              if (pathName == "/register") {
-                //创建一个数组一个对象来保存帐号和密码
-                var arr = [];
-                var obj = {};
-                //把用户的帐号密码保存
+              if(pathName === '/register'){
+                var arr =[]
+                var obj = {}
                 obj.username = user.username;
                 obj.password = user.password;
-                arr.push(obj);
-                //同步写入db.txt文件，必须是同步进行
-                fs.writeFileSync("db.txt", JSON.stringify(arr), "utf-8");
-                res.end("注册成功!");
-                return;
+                arr.push(obj)
+                fs.writeFileSync('db.txt',JSON.stringify(arr),'utf-8')
+                res.end('注册成功')
+                return
               }
-            } else {
-              console.log("文件中有数据");
-              console.log('data', data)
-              //把数据转成JSON对象，以便我们使用
-              var arr = JSON.parse(data);
-              //遍历整个保存数据的数组  判断登录注册
-              console.log(arr)
-              for (var i = 0; i < arr.length; i++) {
-                var obj = arr[i];
-                if (obj.username == user.username) {
-                  if (pathName == "/login") {
-                    if (obj.password == user.password) {
+            }else {
+              console.log('数据库中有数据')
+              var dbarr = JSON.parse(data)
+              dbarr.forEach(ele => {
+                if(ele.username === user.username){
+                  if(pathName === '/login'){
+                    if(ele.password === user.password){
                       res.end("登录成功!");
                       return;
-                    } else {
-                      res.end("密码错误！");
+                    }else {
+                      res.end("密码错误!");
                       return;
                     }
                   }
-                  if (pathName == "/register") {
-                    res.end("该用户已存在!");
-                    return;
-                  }
+                //   if(pathName === '/register'){
+                //     res.end('该用户已经存在')
+                //     return
+                //   }
+                }
+              });
+              if(pathName === '/login'){
+                res.end('用户名不存在')
+                return
+              }
+              if(pathName === '/register'){
+                var isregister =  dbarr.some(ele => {
+                  return ele.username === user.username
+                })
+                if(isregister){
+                  res.end('该用户已经存在')
+                  return
+                }else {
+                  var obj = {};
+                  obj.username = user.username;
+                  obj.password = user.password;
+                  dbarr.push(obj)
+                  fs.writeFileSync("db.txt" , JSON.stringify(arr) , "utf-8");
+                  res.end("注册成功!");
+                  return;
                 }
               }
-              if (pathName == "/login") {
-                res.end("用户名不存在!");
-                return;
-              }
-              if (pathName == "/register") {
-                //创建新对象写入数据
-                var obj = {};
-                obj.username = user.username;
-                obj.password = user.password;
-                arr.push(obj);
-                fs.writeFileSync("db.txt", JSON.stringify(arr), "utf-8");
-                res.end("注册成功!");
-                return;
-              }
             }
-          } else {
-            console.log("读取文件失败");
           }
         })
-      }else {
-        // res.statusCode = 300
-        res.end('用户不存在')
       }
+      // res.end('ok')
     });
   } else {
-    res.end("请输入用户名");
+    res.end("get请求");
   }
 }).listen(9999, function (err) {
   if (!err) {
