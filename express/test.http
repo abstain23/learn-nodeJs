@@ -1,0 +1,27 @@
+@url = http://127.0.0.1:3000/api
+@json = Content-Type: application/json
+
+###
+GET {{url}}
+
+###
+POST {{url}}/register
+{{json}}
+
+{
+  "username":"frank66",
+  "password":"123456"
+}
+
+###
+POST {{url}}/login
+{{json}}
+
+{
+  "username":"frank4",
+  "password":"123456"
+}
+
+###
+GET {{url}}/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMjAwZGRlNWRlMTdkMTJkOTBhZGZlZSIsImlhdCI6MTU3OTE2MDcxOSwiZXhwIjoxNTc5MTYyMTU5fQ.u_gJ0nG-CmFhKGAm_61gPjYxcbbcmIs5LwtxtGVUvXA
