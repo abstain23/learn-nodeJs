@@ -31,15 +31,15 @@ app.get('/api',async (req, res) => {
 app.post('/api/register', async (req, res) => {
   // console.log(req.body)
   const user = await User.create({
-    username:req.body.username,
-    password:req.body.password
+    username:String(req.body.username),
+    password:String(req.body.password)
   })
   res.send(user)
 })
 
 app.post('/api/login',async (req, res) => {
   const user = await User.findOne({
-    username: req.body.username
+    username: String(req.body.username)
   })
   if(!user) {
     return res.status(422).send({

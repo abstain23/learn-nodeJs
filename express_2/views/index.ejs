@@ -1,0 +1,19 @@
+<%- include('./header.ejs') %>
+<% if (entries.length) { %>
+    <% entries.forEach(function(entry) { %>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="text-muted pull-right">
+                    <%= entry.published %>
+                </div>
+                <%= entry.title %>
+             </div>
+             <div class="panel-body">
+                <%= entry.content %>
+             </div>
+         </div>
+     <% }) %>
+<% } else { %>
+    没有任何评论 <a href="/new-entry">TO 增加一条～</a>
+<% } %>
+<%- include('./footer.ejs') %>
